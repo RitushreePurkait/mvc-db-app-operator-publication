@@ -1,0 +1,8 @@
+domain: com
+layout: helm.sdk.operatorframework.io/v1
+projectName: mvc-db-app-operator
+resources:
+- group: example
+  kind: MvcDb
+  version: v1alpha1
+version: 3-alpha

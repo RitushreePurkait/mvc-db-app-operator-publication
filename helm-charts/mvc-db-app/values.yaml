@@ -1,0 +1,27 @@
+# Default values for flask-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Variables for Flask Server
+backend:
+  image: quay.io/ritushreepurkait/nodejs-guestbook-backend:v0.0.1
+  # To pass image pull secrets
+  imagePullSecrets: []
+  replicaCount: 1
+  
+  service:
+    type: NodePort
+    port: 8080
+    targetPort: http-server
+
+# Variables for Vue Client
+frontend:
+  image: quay.io/ritushreepurkait/nodejs-guestbook-frontend:v0.0.1
+  # To pass image pull secrets
+  imagePullSecrets: []
+  replicaCount: 1
+  
+  service:
+    type: NodePort
+    port: 8080
+    targetPort: http-server

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nodejs-guestbook
+    tier: frontend
+  name: nodejs-guestbook-frontend
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      app: nodejs-guestbook
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: nodejs-guestbook
+        tier: frontend
+    spec:
+      {{- with .Values.frontend.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: mvc-db-app-operator
+      containers:
+      - name: frontend
+        image: "{{ .Values.frontend.image }}"
+        imagePullPolicy: Always
+        ports:
+        - name: http-server
+          containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: GUESTBOOK_API_ADDR
+          value: nodejs-guestbook-backend:8080
+        - name: MONGODB_USER
+          valueFrom:
+            secretKeyRef:
+              key: user
+              name: mongodb-credentials
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mongodb-credentials
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

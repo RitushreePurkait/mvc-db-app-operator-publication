@@ -1,0 +1,15 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: nodejs-guestbook-frontend-route
+  labels:
+    app: nodejs-guestbook
+    tier: frontend
+spec:
+  to:
+    kind: Service
+    name: nodejs-guestbook-frontend
+    weight: 100
+  port:
+    targetPort: {{ .Values.frontend.service.port }}
+  wildcardPolicy: None

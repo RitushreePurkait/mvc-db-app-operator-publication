@@ -1,0 +1,24 @@
+apiVersion: example.com/v1alpha1
+kind: MvcDb
+metadata:
+  name: mvcdb-sample-1
+spec:
+  # Default values copied from <project_dir>/helm-charts/mvc-db-app/values.yaml
+  backend:
+    image: quay.io/ritushreepurkait/nodejs-guestbook-backend:v0.0.1
+    imagePullSecrets: []
+    replicaCount: 1
+    service:
+      port: 8080
+      targetPort: http-server
+      type: NodePort
+  frontend:
+    image: quay.io/ritushreepurkait/nodejs-guestbook-frontend:v0.0.1
+    imagePullSecrets: []
+    replicaCount: 1
+    service:
+      port: 8080
+      targetPort: http-server
+      type: NodePort
+  
+  

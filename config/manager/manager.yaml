@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    control-plane: mvc-db-app-operator
+  name: system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mvc-db-app-operator  
+  labels:
+    control-plane: mvc-db-app-operator
+spec:
+  selector:
+    matchLabels:
+      control-plane: mvc-db-app-operator
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        control-plane: mvc-db-app-operator
+    spec:
+      serviceAccountName: mvc-db-app-operator
+      containers:
+      - image: quay.io/ritushreepurkait/mvc-db-app-operator:v0.0.1
+        imagePullPolicy: Always
+        args:
+        - "--enable-leader-election"
+        - "--leader-election-id=mvc-db-app-operator"
+        name: manager
+        env:
+          - name: WATCH_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: OPERATOR_NAME
+            value: "mvc-db-app-operator"
+          - name: RELATED_IMAGE_BACKEND
+            value: quay.io/ritushreepurkait/nodejs-guestbook-backend:v0.0.1
+          - name: RELATED_IMAGE_FRONTEND
+            value: quay.io/ritushreepurkait/nodejs-guestbook-frontend:v0.0.1
+      terminationGracePeriodSeconds: 10
